@@ -1,0 +1,178 @@
+/* Header & Navigation */
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ff5722;
+    color: white;
+    padding: 1rem 2rem;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-logo {
+    height: 75px;
+    width: auto;
+    border-radius: 0.5rem;
+}
+
+.header-nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.header-nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.header-nav a:hover {
+    color: #ffe0b2;
+}
+
+.burger {
+    display: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .burger {
+        display: block;
+    }
+
+    .header-nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        background-color: #ff7043;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        padding: 1rem;
+    }
+
+    .header-nav.open {
+        display: flex;
+    }
+
+    .header-nav a {
+        padding: 0.5rem 0;
+    }
+
+    main {
+        flex-direction: column;
+        padding: 1rem;
+    }
+}
+
+/* Hauptlayout */
+main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.restaurant-info {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 1rem auto;
+    padding: 1rem;
+}
+
+/* Menü */
+.menu-category {
+    margin-bottom: 3rem;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.menu-category h3 {
+    color: #ff5722;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.dish {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    align-items: center;
+    background: #fefefe;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.dish div {
+    flex: 1;
+}
+
+.dish h4 {
+    margin: 0;
+}
+
+.dish button {
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.dish button:hover {
+    background-color: #e64a19;
+}
+
+/* Kategorien-Navigation */
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem;
+}
+
+.categories button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #ffe0b2;
+    color: #333;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.categories button:hover {
+    background-color: #ffcc80;
+}
+
+/* Footer */
+footer {
+    background-color: #f1f1f1;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: #777;
+    margin-top: 2rem;
+}

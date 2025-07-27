@@ -6,20 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bestell-App</title>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="./styles/fonts.css">
+    <link rel="stylesheet" href="./styles/standard.css">
+    <link rel="stylesheet" href="./styles/assets.css">
+    <link rel="stylesheet" href="./styles/basket.css">
 
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-    <!-- Bootstrap (optional)  -->
+    <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
         crossorigin="anonymous"></script>
 
-    <!-- Script -->
-    <script defer src="script.js"></script>
+    <!-- Wichtig: als Modul laden -->
+    <script type="module" src="./script.js"></script>
+
 </head>
 
 <body>
@@ -27,37 +30,59 @@
     <header>
         <div class="header-left">
             <a href="index.html">
-                <img src="img/Logo.png" alt="Logo" class="header-logo" />
+                <img src="assets/logos/Logo.png" alt="Logo" class="header-logo" />
             </a>
         </div>
 
-        <nav class="header-nav">
+        <nav class="header-nav" id="mainNav">
             <a href="index.html">Home</a>
-            <a href="index.html#menuSections">Speisekarte</a>
-            <a href="kontakt.html">Kontakt</a> <!-- Link zur Kontakt-Seite -->
+            <a href="#menuSections">Speisekarte</a>
+            <a href="#" onclick="showContact(); return false;">Kontakt</a>
+
         </nav>
 
-        <div class="burger" onclick="toggleMenu()">☰</div>
+        <div class="burger" onclick="toggleMenu()" aria-label="Menü öffnen">☰</div>
     </header>
 
-    <section id="contactSection" style="display:none;">
-        <h2>Kontakt</h2>
-        <form id="contactForm">
-            <label for="contactName">Name:</label>
-            <input id="contactName" type="text" required>
-            <label for="contactEmail">Email:</label>
-            <input id="contactEmail" type="email" required>
-            <label for="contactMessage">Nachricht:</label>
-            <textarea id="contactMessage" required></textarea>
-            <button type="submit">Senden</button>
+    <section id="contactSection" style="display:none;" class="contact-section show">
+        <h2 style="text-align: center; color: #ff5722;">Kontakt</h2>
+
+        <p style="text-align: center; margin-bottom: 1rem;">
+            Du kannst uns auch direkt per E-Mail kontaktieren:
+            <a href="markus.grund@bestellapp.de">markus.grund@bestellapp.de</a>
+        </p>
+
+        <form id="contactForm" onsubmit="return sendMail(event)" style="max-width: 500px; margin: 0 auto;">
+            <div style="margin-bottom: 1rem;">
+                <label for="contactName" style="font-weight: bold;">Name:</label>
+                <input id="contactName" name="contactName" type="text" required
+                    style="width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="contactEmail" style="font-weight: bold;">E-Mail:</label>
+                <input id="contactEmail" name="contactEmail" type="email" required
+                    style="width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="contactMessage" style="font-weight: bold;">Nachricht:</label>
+                <textarea id="contactMessage" name="contactMessage" required
+                    style="width: 100%; padding: 0.5rem; border-radius: 5px; border: 1px solid #ccc; min-height: 100px;"></textarea>
+            </div>
+
+            <div style="text-align: center;">
+                <button type="submit"
+                    style="background-color: #2196f3; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 5px; cursor: pointer;">
+                    Nachricht senden
+                </button>
+            </div>
         </form>
     </section>
 
     <main style="padding: 2rem; min-height: 100vh; overflow: visible; display: flex; gap: 2rem;">
-        <!-- Menübereich -->
+        <!-- Menü -->
         <div style="flex: 2;">
-
-            <!-- Restaurant Info -->
             <section class="restaurant-info" style="margin-bottom: 1rem;">
                 <h1>Handmade Burger</h1>
                 <div>
@@ -67,12 +92,7 @@
                 <p>Frische Burger • Lieferung ab 5 € • 30–45 min</p>
             </section>
 
-
-
-            <!-- Kategorien -->
             <nav class="categories" id="categoryNav"></nav>
-
-            <!-- Menü -->
             <div id="menuSections"></div>
         </div>
 
@@ -84,14 +104,14 @@
             <button id="checkoutBtn" class="checkout">Bestellen</button>
 
             <div id="cartSummary">
-                <p>Zwischensumme: €<span id="cartSubtotal">0.00</span></p>
+                <p>Zwischensumme: €<span id="cartSubtotalSummary">0.00</span></p>
                 <p>Lieferkosten: €<span id="deliveryCost">0.00</span></p>
                 <p><strong>Gesamt: €<span id="grandTotal">0.00</span></strong></p>
             </div>
 
             <div id="orderConfirmation" style="display:none;">
                 <h3>Vielen Dank für deine Bestellung!</h3>
-                <p>Deine Bestellung wurde erfolgreich aufgegeben und wird in ca. 20 Min. bei Dir sein</p>
+                <p>Deine Bestellung wurde erfolgreich aufgegeben und wird in ca. 30–45 Min. bei Dir sein.</p>
             </div>
 
             <div id="checkoutFormContainer" style="display:none;">
@@ -114,10 +134,10 @@
         </aside>
     </main>
 
-    <!-- Mobiler Warenkorb Button -->
+    <!-- Mobiler Button -->
     <button class="mobile-cart-btn" id="mobileCartBtn" onclick="toggleCart()">🛒 €0.00</button>
 
-    <!-- Zahlungsmodal -->
+    <!-- Modal -->
     <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -140,5 +160,8 @@
         </div>
     </div>
 
-    <footer>© 2025 Burger Maschine</footer>
+    <footer>© 2025 Markus Grund</footer>
+
 </body>
+
+</html>
