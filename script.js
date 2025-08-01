@@ -11,95 +11,76 @@ function formatEuro(value) {
 function renderMenu(menuData, addToCart) {
   const container = document.getElementById('menuSections');
   container.innerHTML = '';
-
-  const catTemplate = document.getElementById('categoryTemplate');
+  const categoryTemplate = document.getElementById('categoryTemplate');
   const dishTemplate = document.getElementById('dishTemplate');
 
   menuData.forEach(section => {
-    const catClone = catTemplate.content.cloneNode(true);
-    const catEl = catClone.querySelector('.menu-category');
-    catEl.id = `menu-${section.category.toLowerCase()}`;
-    catEl.querySelector('.category-title').textContent = section.category;
-
-    const imgEl = catEl.querySelector('.category-image');
-    imgEl.src = categoryImages[section.category] || 'images/placeholder.jpg';
-    imgEl.alt = section.category;
+    const categoryClone = categoryTemplate.content.cloneNode(true);
+    const categoryElement = categoryClone.querySelector('.menu-category');
+    categoryElement.id = `menu-${section.category.toLowerCase()}`;
+    categoryElement.querySelector('.category-title').textContent = section.category;
+    const categoryImage = categoryElement.querySelector('.category-image');
+    categoryImage.src = categoryImages[section.category] || 'images/placeholder.jpg';
+    categoryImage.alt = section.category;
 
     section.dishes.forEach(dish => {
       const dishClone = dishTemplate.content.cloneNode(true);
-      const img = dishClone.querySelector('.dish-img');
-      const name = dishClone.querySelector('.dish-name');
-      const price = dishClone.querySelector('.dish-price');
-      const btn = dishClone.querySelector('.add-to-cart-btn');
-
-      img.src = dish.img;
-      img.alt = dish.name;
-      name.textContent = dish.name;
-      price.textContent = formatEuro(dish.price);
-
+      dishClone.querySelector('.dish-img').src = dish.img;
+      dishClone.querySelector('.dish-img').alt = dish.name;
+      dishClone.querySelector('.dish-name').textContent = dish.name;
+      dishClone.querySelector('.dish-price').textContent = formatEuro(dish.price);
       const handler = () => addToCart(section.category, dish.name);
-      img.addEventListener('click', handler);
-      btn.addEventListener('click', handler);
-
-      catEl.appendChild(dishClone);
+      dishClone.querySelector('.dish-img').addEventListener('click', handler);
+      dishClone.querySelector('.add-to-cart-btn').addEventListener('click', handler);
+      categoryElement.appendChild(dishClone);
     });
 
-    container.appendChild(catEl);
+    container.appendChild(categoryElement);
   });
 }
 
 function renderCategories(menuData) {
-  const nav = document.getElementById('categoryNav');
-  nav.innerHTML = '';
-
+  const navigation = document.getElementById('categoryNav');
+  navigation.innerHTML = '';
   menuData.forEach(section => {
-    const btn = document.createElement('button');
-    btn.textContent = section.category;
-    btn.onclick = () => {
-      const el = document.getElementById(`menu-${section.category.toLowerCase()}`);
-      el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const button = document.createElement('button');
+    button.textContent = section.category;
+    button.onclick = () => {
+      const categoryElement = document.getElementById(`menu-${section.category.toLowerCase()}`);
+      if (categoryElement) {
+        categoryElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     };
-    nav.appendChild(btn);
+    navigation.appendChild(button);
   });
 }
 
 function renderCart(cartData, changeQuantity, removeFromCart) {
   const list = document.getElementById('cartItems');
-  const subtotalEls = document.querySelectorAll('#cartSubtotal, #cartSubtotalSummary');
-  const deliveryEl = document.getElementById('deliveryCost');
-  const grandTotalEl = document.getElementById('grandTotal');
-  const mobileBtn = document.getElementById('mobileCartBtn');
+  const subtotalElements = document.querySelectorAll('#cartSubtotal, #cartSubtotalSummary');
+  const deliveryElement = document.getElementById('deliveryCost');
+  const grandTotalElement = document.getElementById('grandTotal');
+  const mobileButton = document.getElementById('mobileCartBtn');
   const cartItemTemplate = document.getElementById('cartItemTemplate');
-
   list.innerHTML = '';
   let total = 0;
 
   cartData.forEach(item => {
     total += item.price * item.quantity;
-
     const clone = cartItemTemplate.content.cloneNode(true);
     clone.querySelector('.item-title').textContent = item.name;
-    clone.querySelector('.item-total-line').textContent =
-      `${formatEuro(item.price)} × ${item.quantity} = ${formatEuro(item.price * item.quantity)}`;
-
+    clone.querySelector('.item-total-line').textContent = `${formatEuro(item.price)} × ${item.quantity} = ${formatEuro(item.price * item.quantity)}`;
     clone.querySelector('.plus-btn').onclick = () => changeQuantity(item.name, 1);
     clone.querySelector('.minus-btn').onclick = () => changeQuantity(item.name, -1);
     clone.querySelector('.remove-btn').onclick = () => removeFromCart(item.name);
-
     list.appendChild(clone);
   });
 
-  subtotalEls.forEach(el => (el.textContent = formatEuro(total)));
-
-  if (cartData.length > 0) {
-    deliveryEl.textContent = formatEuro(deliveryCost);
-    grandTotalEl.textContent = formatEuro(total + deliveryCost);
-    mobileBtn.textContent = `🛒 ${formatEuro(total + deliveryCost)}`;
-  } else {
-    deliveryEl.textContent = formatEuro(0);
-    grandTotalEl.textContent = formatEuro(0);
-    mobileBtn.textContent = '🛒 0,00 €';
-  }
+  subtotalElements.forEach(el => el.textContent = formatEuro(total));
+  const hasItems = cartData.length > 0;
+  deliveryElement.textContent = formatEuro(hasItems ? deliveryCost : 0);
+  grandTotalElement.textContent = formatEuro(hasItems ? total + deliveryCost : 0);
+  mobileButton.textContent = `🛒 ${formatEuro(hasItems ? total + deliveryCost : 0)}`;
 }
 
 function renderDeliveryInfo(name, address, phone) {
@@ -123,12 +104,6 @@ function sendMail(event) {
   const name = document.getElementById('contactName').value.trim();
   const email = document.getElementById('contactEmail').value.trim();
   const message = document.getElementById('contactMessage').value.trim();
-
-  if (!name || !email || !message) return alert('Bitte fülle alle Felder aus.');
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) return alert('Bitte gib eine gültige Email-Adresse ein.');
-
   const subject = encodeURIComponent(`Kontaktanfrage von ${name}`);
   const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nNachricht:\n${message}`);
   window.location.href = `mailto:markus.grund@bestellapp.de?subject=${subject}&body=${body}`;
@@ -144,7 +119,6 @@ function saveAndRenderCart() {
 function addToCart(category, name) {
   const dish = menuData.find(cat => cat.category === category)?.dishes.find(d => d.name === name);
   if (!dish) return;
-
   const existing = cartData.find(c => c.name === name);
   if (existing) existing.quantity++;
   else cartData.push({ ...dish, quantity: 1 });
@@ -155,7 +129,6 @@ function addToCart(category, name) {
 function changeQuantity(name, delta) {
   const item = cartData.find(c => c.name === name);
   if (!item) return;
-
   item.quantity += delta;
   if (item.quantity < 1) cartData = cartData.filter(i => i.name !== name);
 
@@ -209,7 +182,7 @@ function updateSummary() {
 }
 
 function checkout() {
-  if (cartData.length === 0) return alert('Dein Warenkorb ist leer!');
+  if (cartData.length === 0) return ('Dein Warenkorb ist leer!');
   document.getElementById('checkoutFormContainer').style.display = 'block';
   closePaymentModal();
 }
@@ -223,7 +196,6 @@ function closePaymentModal() {
 }
 
 function finishOrder(method) {
-  console.log(`Bestellung abgeschlossen mit Methode: ${method}`);
   cartData = [];
   saveAndRenderCart();
   closePaymentModal();
@@ -246,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const name = document.getElementById('customerName').value.trim();
     const address = document.getElementById('customerAddress').value.trim();
     const phone = document.getElementById('customerPhone').value.trim();
-    if (!name || !address || !phone) return alert('Bitte alle Felder ausfüllen.');
+    if (!name || !address || !phone) return ('Bitte alle Felder ausfüllen.');
 
     renderDeliveryInfo(name, address, phone);
     openPaymentModal();
